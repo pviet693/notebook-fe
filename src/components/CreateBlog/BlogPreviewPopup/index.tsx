@@ -135,15 +135,15 @@ export default function BlogPreviewPopup({
                                 >
                                     <Avatar className="h-[18px] w-[18px]">
                                         <AvatarImage
-                                            src={blog.user.profile_img}
-                                            alt={blog.user.fullname}
+                                            src={blog.user?.profile_img}
+                                            alt={blog.user?.fullname}
                                         />
                                         <AvatarFallback>
-                                            {blog.user.fullname[0]}
+                                            {blog.user?.fullname[0]}
                                         </AvatarFallback>
                                     </Avatar>
                                     <span className="text-[#777]">
-                                        {blog.user.fullname}
+                                        {blog.user?.fullname}
                                     </span>
                                 </div>
                                 <Separator
