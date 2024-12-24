@@ -46,6 +46,7 @@ export const LinkSelector = ({ open, onOpenChange }: LinkSelectorProps) => {
         <Popover modal={true} open={open} onOpenChange={onOpenChange}>
             <PopoverTrigger asChild>
                 <Button
+                    type="button"
                     size="sm"
                     variant="ghost"
                     className="gap-2 rounded-none border-none"

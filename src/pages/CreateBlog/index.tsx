@@ -391,13 +391,13 @@ export default function CreateBlogPage() {
                                                         onChange={
                                                             field.onChange
                                                         }
-                                                        className="w-full h-20"
+                                                        className="w-full h-32"
                                                         placeholder="Enter a short description"
-                                                        maxLength={255}
+                                                        maxLength={500}
                                                     />
                                                 </FormControl>
                                                 <span className="absolute right-0 top-0 text-xs text-[#98A2B3] font-medium leading-[1.125rem]">
-                                                    {field.value.length}/255
+                                                    {field.value.length}/500
                                                     chars limit
                                                 </span>
                                                 <FormMessage />

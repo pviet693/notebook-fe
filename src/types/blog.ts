@@ -20,7 +20,7 @@ export const createBlogFormSchema = z.object({
     description: z
         .string()
         .min(1, "Description is required")
-        .max(255, "Description must be at most 255 characters"),
+        .max(500, "Description must be at most 500 characters"),
     categories: z
         .array(z.custom<Category>())
         .min(1, "Tags is required")
