@@ -10,6 +10,7 @@ export const MathSelector = () => {
 
     return (
         <Button
+            type="button"
             variant="ghost"
             size="sm"
             className="w-12 rounded-none"

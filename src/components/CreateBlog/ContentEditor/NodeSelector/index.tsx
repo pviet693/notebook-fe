@@ -130,7 +130,7 @@ export const NodeSelector = ({ open, onOpenChange }: NodeSelectorProps) => {
                 asChild
                 className="gap-2 rounded-none border-none hover:bg-accent focus:ring-0"
             >
-                <Button size="sm" variant="ghost" className="gap-2">
+                <Button type="button" size="sm" variant="ghost" className="gap-2">
                     <span className="whitespace-nowrap text-sm">
                         {activeItem.name}
                     </span>
