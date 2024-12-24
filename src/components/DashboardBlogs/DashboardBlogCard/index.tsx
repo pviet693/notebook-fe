@@ -1,6 +1,14 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Calendar, Timer, MessageSquare, Eye, Heart, Edit } from "lucide-react";
+import {
+    Calendar,
+    Timer,
+    MessageSquare,
+    Eye,
+    Heart,
+    Edit,
+    View
+} from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -84,23 +92,20 @@ function BlogCard({ blog, isLoading = false }: BlogCardProps) {
                         <Badge
                             variant="outline"
                             className={cn("ml-auto", {
-                                "bg-[#f2f8f7] text-primary": blog.status === BlogStatus.PUBLISHED,
-                                "bg-[#e06f6c26] text-destructive": blog.status === BlogStatus.DRAFT
+                                "bg-[#f2f8f7] text-primary":
+                                    blog.status === BlogStatus.PUBLISHED,
+                                "bg-[#e06f6c26] text-destructive":
+                                    blog.status === BlogStatus.DRAFT
                             })}
                         >
-                            {blog.status === BlogStatus.DRAFT
+                            {blog.status === BlogStatus.PUBLISHED
                                 ? "Published"
                                 : "Draft"}
                         </Badge>
                     </div>
-                    <Link
-                        to="/blogs/$blogSlug"
-                        params={{ blogSlug: blog.slug }}
-                    >
-                        <h3 className="text-[28px] font-semibold leading-[2.375rem] text-[#222] hover:cursor-pointer hover:underline line-clamp-2">
-                            {blog.title}
-                        </h3>
-                    </Link>
+                    <h3 className="text-[28px] font-semibold leading-[2.375rem] text-[#222] line-clamp-2">
+                        {blog.title}
+                    </h3>
                     <div className="flex items-center gap-2 text-xs max-md:flex-col max-md:items-start">
                         <div className="flex items-center gap-2 max-md:items-start">
                             <Avatar className="h-[18px] w-[18px]">
@@ -158,20 +163,34 @@ function BlogCard({ blog, isLoading = false }: BlogCardProps) {
                             <Heart className="w-4 h-4" />
                             <span>{totalLikeCount}</span>
                         </div>
-                        <Link
-                            to="/blogs/$blogId/edit"
-                            params={{ blogId: blog.id }}
-                            className="ml-auto"
-                        >
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                className="ml-auto text-white bg-primary hover:bg-primary hover:text-white hover:opacity-90"
+                        <div className="ml-auto grid grid-cols-[auto_auto] gap-2">
+                            {blog.status === BlogStatus.PUBLISHED ? (
+                                <Link
+                                    to="/blogs/$blogSlug"
+                                    params={{ blogSlug: blog.slug }}
+                                    className="text-xs hover:underline"
+                                >
+                                    <Button variant="outline" size="sm">
+                                        <View className="w-4 h-4 mr-2" />
+                                        View blog
+                                    </Button>
+                                </Link>
+                            ) : null}
+                            <Link
+                                to="/blogs/$blogId/edit"
+                                params={{ blogId: blog.id }}
+                                className="ml-auto"
                             >
-                                <Edit className="w-4 h-4 mr-2" />
-                                Edit
-                            </Button>
-                        </Link>
+                                <Button
+                                    variant="outline"
+                                    size="sm"
+                                    className="text-white bg-primary hover:bg-primary hover:text-white hover:opacity-90"
+                                >
+                                    <Edit className="w-4 h-4 mr-2" />
+                                    Edit
+                                </Button>
+                            </Link>
+                        </div>
                     </div>
                 </CardContent>
             </div>
