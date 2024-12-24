@@ -39,6 +39,7 @@ export default function TopAuthors() {
                           <div key={index} className="flex items-center gap-6">
                               <Avatar className="w-[70px] h-[70px]">
                                   <AvatarImage
+                                      className="hover:scale-105 transition-transform duration-300 ease-in-out"
                                       src={author.profile_img}
                                       alt={author.fullname}
                                   />
