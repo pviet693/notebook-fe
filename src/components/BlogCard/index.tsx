@@ -19,7 +19,7 @@ function BlogCard({ blog, isLoading = false }: BlogCardProps) {
         return (
             <Card className="overflow-hidden border-none shadow-none rounded-sm">
                 <div className="flex items-center">
-                    <Skeleton className="w-[266px] h-[180px]" />
+                    <Skeleton className="w-[266px] h-[200px]" />
                     <CardContent className="flex flex-col justify-between p-6 w-[460px]">
                         <div className="space-y-4">
                             <Skeleton className="h-6 w-20" />
@@ -48,7 +48,7 @@ function BlogCard({ blog, isLoading = false }: BlogCardProps) {
                 <LazyLoadImage
                     src={blog.bannerUrl}
                     alt={blog.title}
-                    className="w-[266px] h-[180px] max-md:w-full"
+                    className="w-[266px] h-[200px] max-md:w-full hover:scale-105 transition-transform duration-300 ease-in-out"
                     imageClassName="rounded-sm"
                 />
                 <CardContent className="flex flex-col justify-between p-6 max-md:p-2 w-[460px] max-md:w-full gap-3">

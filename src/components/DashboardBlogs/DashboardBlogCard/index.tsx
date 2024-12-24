@@ -75,7 +75,7 @@ function BlogCard({ blog, isLoading = false }: BlogCardProps) {
                 <LazyLoadImage
                     src={blog.bannerUrl}
                     alt={blog.title}
-                    className="w-[420px] h-[220px] max-md:w-full"
+                    className="w-[420px] h-[220px] max-md:w-full hover:scale-105 transition-transform duration-300 ease-in-out"
                     imageClassName="rounded-sm"
                 />
                 <CardContent className="flex flex-col justify-between w-full gap-3 p-0">
