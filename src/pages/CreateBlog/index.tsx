@@ -33,7 +33,7 @@ import { useCreateBlogMutation } from "@/hooks/blog/useCreateBlogMutation";
 import { useToast } from "@/hooks/use-toast";
 import { AxiosError } from "axios";
 import Container from "@/components/Container";
-import { useParams } from "@tanstack/react-router";
+import { useNavigate, useParams } from "@tanstack/react-router";
 import { useEditBlogMutation } from "@/hooks/blog/useEditBlogMutation";
 import { useBlogDetailsByIdQuery } from "@/hooks/blog/useBlogDetailsByIdQuery";
 
@@ -51,6 +51,7 @@ const defaultValues = {
 export default function CreateBlogPage() {
     const auth = useAuthContext();
     const { toast } = useToast();
+    const navigate = useNavigate();
     const { blogId } = useParams({
         strict: false
     });
@@ -122,6 +123,9 @@ export default function CreateBlogPage() {
                         description: `Your blog has been ${data.status === BlogStatus.DRAFT ? "saved" : "published"} successfully.`,
                         variant: "success"
                     });
+                    navigate({
+                        to: "/me/dashboard/blogs"
+                    });
                 },
                 onError: (error) => {
                     const axiosError = error as AxiosError<{ message: string }>;
@@ -162,6 +166,9 @@ export default function CreateBlogPage() {
                         title: "Blog updated",
                         description: `Your blog has been ${data.status === BlogStatus.DRAFT ? "saved" : "published"} successfully.`,
                         variant: "success"
+                    });
+                    navigate({
+                        to: "/me/dashboard/blogs"
                     });
                 },
                 onError: (error) => {
