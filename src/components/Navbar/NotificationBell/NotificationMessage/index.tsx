@@ -26,13 +26,23 @@ export default function NotificationMessage({
                     "text-gray-900": !notification.hasRead
                 })}
             >
-                <Link to="/" className="hover:underline font-medium inline-block">{sender.fullname}</Link>
-                <span className="whitespace-break-spaces flex-1"> {messages[type]}</span>
+                <Link
+                    to="/authors/$username"
+                    params={{ username: sender.username }}
+                    className="hover:underline font-medium inline-block"
+                >
+                    {sender.fullname}
+                </Link>
+                <span className="whitespace-break-spaces flex-1">
+                    {" "}
+                    {messages[type]}
+                </span>
             </p>
             <Link
                 to="/blogs/$blogSlug"
                 params={{ blogSlug: notification.blog.slug }}
-                className="text-xs text-gray-400 mt-1 truncate line-clamp-1 hover:underline"
+                className="text-xs text-gray-400 mt-1 line-clamp-1 hover:underline"
+                title={notification.blog.title}
             >
                 {notification.blog.title}
             </Link>

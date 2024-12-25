@@ -90,7 +90,7 @@ function BlogCard({ blog, isLoading = false }: BlogCardProps) {
                                 : "Draft"}
                         </Badge>
                     </div>
-                    <h3 className="text-[28px] font-semibold leading-[2.375rem] text-[#222] line-clamp-2">
+                    <h3 className="text-[28px] font-semibold leading-[2.375rem] text-[#222] line-clamp-2" title={blog.title}>
                         {blog.title}
                     </h3>
                     <div className="flex items-center gap-2 text-xs max-md:flex-col max-md:items-start">
