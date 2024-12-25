@@ -19,6 +19,8 @@ import { useSignInMutation } from "@/hooks/auth/useSignInMutation";
 import { useState } from "react";
 import useAuthContext from "@/hooks/auth/useAuthContext";
 import { AxiosError } from "axios";
+import { TokenResponse, useGoogleLogin } from "@react-oauth/google";
+import { useGoogleSignInMutation } from "@/hooks/auth/useGoogleSignInMutation";
 
 export default function SignInForm() {
     const { toast } = useToast();
@@ -29,6 +31,8 @@ export default function SignInForm() {
     const redirectUri = urlParams.get("redirect_uri") || "/";
     const [showPassword, setShowPassword] = useState(false);
     const { mutate, isPending } = useSignInMutation();
+    const { mutate: googleSignInMutation, isPending: isGoogleSignInPending } =
+        useGoogleSignInMutation();
     const form = useForm<SignInFormData>({
         resolver: zodResolver(signInFormSchema),
         defaultValues: {
@@ -54,14 +58,72 @@ export default function SignInForm() {
                 const axiosError = error as AxiosError<{ message: string }>;
                 toast({
                     title: "Sign in failed",
-                    description: axiosError?.response?.data?.message ?? error.message,
+                    description:
+                        axiosError?.response?.data?.message ?? error.message,
                     variant: "error"
                 });
             }
         });
     }
 
-    const handleGoogleSignIn = async () => {};
+    const handleGoogleSigninSuccess = (response: TokenResponse) => {
+        const token = response.access_token;
+
+        if (!token) {
+            toast({
+                title: "Google Sign Up failed",
+                description: "Failed to sign up with Google. Please try again.",
+                variant: "error"
+            });
+            return;
+        }
+
+        googleSignInMutation(
+            { token },
+            {
+                onSuccess: ({ data }) => {
+                    signin(data.accessToken, data.user);
+                    navigate({ to: redirectUri });
+
+                    toast({
+                        title: "Registration successful",
+                        description: "Welcome to Our Community.",
+                        variant: "success"
+                    });
+                },
+                onError: (error) => {
+                    const axiosError = error as AxiosError<{ message: string }>;
+                    toast({
+                        title: "Registration failed",
+                        description:
+                            axiosError?.response?.data?.message ??
+                            error.message,
+                        variant: "error"
+                    });
+                }
+            }
+        );
+    };
+
+    const handleGoogleSignupError = (
+        errorResponse: Pick<
+            TokenResponse,
+            "error" | "error_description" | "error_uri"
+        >
+    ) => {
+        toast({
+            title: "Google Sign Up failed",
+            description: errorResponse.error_description,
+            variant: "error"
+        });
+    };
+
+    const googleSignIn = useGoogleLogin({
+        onSuccess: handleGoogleSigninSuccess,
+        onError: handleGoogleSignupError,
+        scope: "https://www.googleapis.com/auth/userinfo.email  https://www.googleapis.com/auth/userinfo.profile openid",
+        prompt: "consent"
+    });
 
     return (
         <div className="space-y-6">
@@ -72,7 +134,8 @@ export default function SignInForm() {
             <Button
                 variant="outline"
                 className="w-full"
-                onClick={handleGoogleSignIn}
+                onClick={() => googleSignIn()}
+                loading={isGoogleSignInPending}
             >
                 <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                     <path
