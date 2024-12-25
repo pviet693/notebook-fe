@@ -56,19 +56,6 @@ function BlogCard({ blog, isLoading = false }: BlogCardProps) {
 
     if (!blog) return null;
 
-    const totalLikeCount = blog.likes!.reduce(
-        (total, like) => total + like.likeCount,
-        0
-    );
-    const totalCommentCount = blog.comments!.reduce(
-        (total, comment) => total + comment.commentCount,
-        0
-    );
-    const totalReadCount = blog.read!.reduce(
-        (total, read) => total + read.readCount,
-        0
-    );
-
     return (
         <Card className="overflow-hidden shadow-none border-none rounded-sm max-md:border-[#f2f8f7] max-md:shadow-sm">
             <div className="flex items-center gap-8 max-md:flex-col max-md:gap-2">
@@ -153,15 +140,15 @@ function BlogCard({ blog, isLoading = false }: BlogCardProps) {
                     <div className="flex items-center gap-4 mt-2 text-sm text-[#777]">
                         <div className="flex items-center gap-1">
                             <MessageSquare className="w-4 h-4" />
-                            <span>{totalCommentCount}</span>
+                            <span>{blog.commentCount}</span>
                         </div>
                         <div className="flex items-center gap-1">
                             <Eye className="w-4 h-4" />
-                            <span>{totalReadCount}</span>
+                            <span>{blog.readCount}</span>
                         </div>
                         <div className="flex items-center gap-1">
                             <Heart className="w-4 h-4" />
-                            <span>{totalLikeCount}</span>
+                            <span>{blog.likeCount}</span>
                         </div>
                         <div className="ml-auto grid grid-cols-[auto_auto] gap-2">
                             {blog.status === BlogStatus.PUBLISHED ? (
