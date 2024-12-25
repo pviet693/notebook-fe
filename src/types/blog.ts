@@ -65,9 +65,6 @@ export type Blog = {
     createdAt: string;
     updatedAt: string;
     readTime: number;
-    likes?: { likeCount: number }[];
-    comments?: { commentCount: number }[];
-    read?: { readCount: number }[];
     likeCount?: number;
     commentCount?: number;
     readCount?: number;
