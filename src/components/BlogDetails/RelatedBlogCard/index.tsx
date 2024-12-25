@@ -71,7 +71,7 @@ function RelatedBlogCard({ blog, isLoading = false }: RelatedBlogCardProps) {
                         to="/blogs/$blogSlug"
                         params={{ blogSlug: blog.slug }}
                     >
-                        <h3 className="text-[28px] font-semibold leading-[2.375rem] text-[#222] hover:cursor-pointer hover:underline line-clamp-2">
+                        <h3 className="text-[28px] font-semibold leading-[2.375rem] text-[#222] hover:cursor-pointer hover:underline line-clamp-2" title={blog.title}>
                             {blog.title}
                         </h3>
                     </Link>
