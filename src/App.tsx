@@ -31,7 +31,13 @@ declare module "@tanstack/react-router" {
     }
 }
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+    defaultOptions: {
+        queries: {
+            refetchOnWindowFocus: false
+        }
+    }
+});
 
 function App() {
     const auth = useAuth();
