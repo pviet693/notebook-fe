@@ -27,6 +27,8 @@ export default function Navbar() {
     const router = useRouter();
     const { isLoggedIn, user, signout } = useAuthContext();
 
+    console.log(user);
+
     const handleSignout = () => {
         signout();
         router.invalidate();

@@ -15,7 +15,23 @@ export const signIn = async (payload: SignInFormData) => {
     const response = await axiosInstance.post(url, payload);
 
     return response.data;
-}
+};
+
+export const googleSignUp = async (payload: { token: string }) => {
+    const url = `/users/google-sign-up`;
+
+    const response = await axiosInstance.post(url, payload);
+
+    return response.data;
+};
+
+export const googleSignIn = async (payload: { token: string }) => {
+    const url = `/users/google-sign-in`;
+
+    const response = await axiosInstance.post(url, payload);
+
+    return response.data;
+};
 
 export const getMe = async (userId: string) => {
     const url = `/users/me/${userId}`;

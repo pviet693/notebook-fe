@@ -1,6 +1,7 @@
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "next-themes";
+import { GoogleOAuthProvider } from "@react-oauth/google";
 
 import useAuth from "@/hooks/auth/useAuth";
 
@@ -43,6 +44,7 @@ function App() {
     const auth = useAuth();
 
     return (
+        <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
         <ThemeProvider attribute="class">
             <QueryClientProvider client={queryClient}>
                 <AuthProvider>
@@ -51,6 +53,7 @@ function App() {
                 </AuthProvider>
             </QueryClientProvider>
         </ThemeProvider>
+        </GoogleOAuthProvider>
     );
 }
 

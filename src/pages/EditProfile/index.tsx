@@ -34,8 +34,10 @@ export default function EditProfilePage() {
     const { toast } = useToast();
     const { userId, setUser } = useAuthContext();
     const { data, isSuccess } = useGetMeQuery(userId);
-    const { mutate: editProfileMutation } = useEditProfileMutation();
-    const { mutate: uploadFile } = useUploadMutation();
+    const { mutate: editProfileMutation, isPending: isEditProfilePending } =
+        useEditProfileMutation();
+    const { mutate: uploadFile, isPending: isUploadFilePending } =
+        useUploadMutation();
     const form = useForm<EditProfileFormData>({
         resolver: zodResolver(editProfileFormSchema),
         defaultValues: {
@@ -77,13 +79,16 @@ export default function EditProfilePage() {
                     variant: "success"
                 });
                 form.reset(values);
-                setUser((pre) => ({
-                    ...pre,
-                    fullname: values.fullname,
-                    bio: values.bio,
-                    profile_img: values.profileImg,
-                    username: values.username
-                }) as User);
+                setUser(
+                    (pre) =>
+                        ({
+                            ...pre,
+                            fullname: values.fullname,
+                            bio: values.bio,
+                            profile_img: values.profileImg,
+                            username: values.username
+                        }) as User
+                );
             },
             onError: (error) => {
                 const axiosError = error as AxiosError<{ message: string }>;
@@ -307,7 +312,14 @@ export default function EditProfilePage() {
                             </div>
                         </div>
 
-                        <Button type="submit">Update</Button>
+                        <Button
+                            type="submit"
+                            loading={
+                                isEditProfilePending || isUploadFilePending
+                            }
+                        >
+                            Update
+                        </Button>
                     </form>
                 </Form>
             </div>
