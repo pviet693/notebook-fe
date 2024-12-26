@@ -10,6 +10,7 @@ import { getPrevText } from "novel/utils";
 import {
     CommandGroup,
     CommandItem,
+    CommandList,
     CommandSeparator
 } from "@/components/ui/command";
 
@@ -45,7 +46,7 @@ const AISelectorCommands = ({ onSelect }: AISelectorCommandsProps) => {
     const { editor } = useEditor();
 
     return (
-        <>
+        <CommandList>
             <CommandGroup heading="Edit or review selection">
                 {options.map((option) => (
                     <CommandItem
@@ -61,7 +62,7 @@ const AISelectorCommands = ({ onSelect }: AISelectorCommandsProps) => {
                         key={option.value}
                         value={option.value}
                     >
-                        <option.icon className="h-4 w-4 text-purple-500" />
+                        <option.icon className="h-4 w-4 text-primary" />
                         {option.label}
                     </CommandItem>
                 ))}
@@ -78,11 +79,11 @@ const AISelectorCommands = ({ onSelect }: AISelectorCommandsProps) => {
                     value="continue"
                     className="gap-2 px-4"
                 >
-                    <StepForward className="h-4 w-4 text-purple-500" />
+                    <StepForward className="h-4 w-4 text-primary" />
                     Continue writing
                 </CommandItem>
             </CommandGroup>
-        </>
+        </CommandList>
     );
 };
 
