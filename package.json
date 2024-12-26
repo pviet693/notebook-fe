@@ -43,7 +43,6 @@
     "@react-oauth/google": "^0.12.1",
     "@tanstack/react-query": "^5.62.3",
     "@tanstack/react-router": "^1.87.0",
-    "ai": "^4.0.13",
     "axios": "^1.7.9",
     "cheerio": "^1.0.0",
     "class-variance-authority": "^0.7.1",

@@ -1,18 +1,17 @@
 import { Command, CommandInput } from "@/components/ui/command";
 
-import { useCompletion } from "ai/react";
 import { ArrowUp } from "lucide-react";
 import { useEditor } from "novel";
 import { addAIHighlight } from "novel/extensions";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Markdown from "react-markdown";
-import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import AICompletionCommands from "@/components/CreateBlog/ContentEditor/AICompletionCommands";
 import AISelectorCommands from "@/components/CreateBlog/ContentEditor/AISelectorCommands";
 import CrazySpinner from "@/components/icons/CrazySpinner";
 import Magic from "@/components/icons/Magic";
+import useStreamCompletion from "@/hooks/ai/useStreamCompletion";
 
 interface AISelectorProps {
     open: boolean;
@@ -20,31 +19,31 @@ interface AISelectorProps {
 }
 
 export function AISelector({ onOpenChange }: AISelectorProps) {
+    const scrollAreaRef = useRef<HTMLDivElement>(null);
     const { editor } = useEditor();
     const [inputValue, setInputValue] = useState("");
 
-    const { completion, complete, isLoading } = useCompletion({
-        // id: "novel",
-        api: "/api/generate",
-        onResponse: (response) => {
-            if (response.status === 429) {
-                toast.error("You have reached your request limit for the day.");
-                return;
-            }
-        },
-        onError: (e: Error) => {
-            toast.error(e.message);
-        }
-    });
+    const { completion, startStream, isLoading } = useStreamCompletion();
 
-    const hasCompletion = completion.length > 0;
+    const hasCompletion = completion?.length > 0;
+
+    useEffect(() => {
+        if (scrollAreaRef.current) {
+            const scrollContainer = scrollAreaRef.current.querySelector(
+                "[data-radix-scroll-area-viewport]"
+            );
+            if (scrollContainer) {
+                scrollContainer.scrollTop = scrollContainer.scrollHeight;
+            }
+        }
+    }, [completion]);
 
     return (
-        <Command className="w-[350px]">
+        <Command className="w-[350px] md:w-[450px] lg:w-[540px]">
             {hasCompletion && (
-                <div className="flex max-h-[400px]">
-                    <ScrollArea>
-                        <div className="prose p-2 px-4 prose-sm">
+                <div className="flex max-h-[400px] w-full">
+                    <ScrollArea ref={scrollAreaRef} className="w-full">
+                        <div className="prose p-2 px-4 prose-sm w-full">
                             <Markdown>{completion}</Markdown>
                         </div>
                     </ScrollArea>
@@ -52,7 +51,7 @@ export function AISelector({ onOpenChange }: AISelectorProps) {
             )}
 
             {isLoading && (
-                <div className="flex h-12 w-full items-center px-4 text-sm font-medium text-muted-foreground text-purple-500">
+                <div className="flex h-12 w-full items-center px-4 text-sm font-medium text-primary">
                     <Magic className="mr-2 h-4 w-4 shrink-0  " />
                     AI is thinking
                     <div className="ml-2 mt-1">
@@ -76,25 +75,29 @@ export function AISelector({ onOpenChange }: AISelectorProps) {
                         />
                         <Button
                             size="icon"
-                            className="absolute right-2 top-1/2 h-6 w-6 -translate-y-1/2 rounded-full bg-purple-500 hover:bg-purple-900"
+                            type="button"
+                            className="absolute right-2 top-1/2 h-6 w-6 -translate-y-1/2 rounded-full bg-primary hover:opacity-90"
                             onClick={() => {
-                                if (completion)
-                                    return complete(completion, {
-                                        body: {
-                                            option: "zap",
-                                            command: inputValue
-                                        }
+                                if (completion) {
+                                    startStream({
+                                        option: "zap",
+                                        command: inputValue,
+                                        prompt: completion
                                     }).then(() => setInputValue(""));
+                                } else {
+                                    const slice =
+                                        editor!.state.selection.content();
+                                    const text =
+                                        editor!.storage.markdown.serializer.serialize(
+                                            slice.content
+                                        );
 
-                                const slice = editor!.state.selection.content();
-                                const text =
-                                    editor!.storage.markdown.serializer.serialize(
-                                        slice.content
-                                    );
-
-                                complete(text, {
-                                    body: { option: "zap", command: inputValue }
-                                }).then(() => setInputValue(""));
+                                    startStream({
+                                        option: "zap",
+                                        command: inputValue,
+                                        prompt: text
+                                    }).then(() => setInputValue(""));
+                                }
                             }}
                         >
                             <ArrowUp className="h-4 w-4" />
@@ -111,7 +114,7 @@ export function AISelector({ onOpenChange }: AISelectorProps) {
                     ) : (
                         <AISelectorCommands
                             onSelect={(value, option) =>
-                                complete(value, { body: { option } })
+                                startStream({ option, prompt: value })
                             }
                         />
                     )}
