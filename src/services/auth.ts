@@ -40,3 +40,27 @@ export const getMe = async (userId: string) => {
 
     return response.data as ApiResponse<User>;
 };
+
+export const requestOTPResetPassword = async (payload: { email: string }) => {
+    const url = `/users/request-otp-reset-password`;
+
+    const response = await axiosInstance.post(url, payload);
+
+    return response.data;
+};
+
+export const verifyOTPResetPassword = async (payload: { otp: string, email: string }) => {
+    const url = `/users/verify-otp-reset-password`;
+
+    const response = await axiosInstance.post(url, payload);
+
+    return response.data;
+};
+
+export const resetPassword = async (payload: { email: string, newPassword: string, confirmedNewPassword: string }) => {
+    const url = `/users/reset-password`;
+
+    const response = await axiosInstance.post(url, payload);
+
+    return response.data;
+};
