@@ -1,6 +1,6 @@
 import axiosInstance from "@/lib/api";
 import { ApiResponse, User } from "@/types";
-import type { ChangePasswordFormData, EditProfilePayload } from "@/types/user";
+import type { EditProfilePayload } from "@/types/user";
 
 export const getTopAuthors = async () => {
     const url = "/users/top-authors";
@@ -16,14 +16,6 @@ export const getAllAuthors = async () => {
     const response = await axiosInstance.get(url);
 
     return response.data as ApiResponse<User[]>;
-};
-
-export const changePassword = async (payload: ChangePasswordFormData) => {
-    const url = "/users/change-password";
-
-    const response = await axiosInstance.put(url, payload);
-
-    return response.data as ApiResponse;
 };
 
 export const editProfile = async (payload: EditProfilePayload) => {

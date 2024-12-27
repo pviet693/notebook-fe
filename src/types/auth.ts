@@ -69,11 +69,14 @@ export const resetPasswordSchema = z
     .object({
         newPassword: z
             .string()
-            .min(1, { message: "Password is required" })
-            .min(8, {
-                message: "Password must be at least 8 characters long."
-            }),
-            confirmedNewPassword: z
+            .min(1, "Password is required")
+            .min(6, "Password must be at least 6 characters long")
+            .max(255, "Password must not exceed 255 characters")
+            .regex(
+                PASSWORD_REGEX,
+                "Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character"
+            ),
+        confirmedNewPassword: z
             .string()
             .min(1, { message: "Confirm Password is required" })
     })
@@ -85,3 +88,31 @@ export const resetPasswordSchema = z
 export type ResetPasswordFormData = z.infer<typeof emailResetPasswordSchema> &
     z.infer<typeof otpSchema> &
     z.infer<typeof resetPasswordSchema>;
+
+export const changePasswordSchema = z
+    .object({
+        googleAuth: z.boolean().optional(),
+        currentPassword: z.string().optional(),
+        newPassword: z
+            .string()
+            .min(1, "Password is required")
+            .min(6, "Password must be at least 6 characters long")
+            .max(255, "Password must not exceed 255 characters")
+            .regex(
+                PASSWORD_REGEX,
+                "Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character"
+            ),
+        confirmedNewPassword: z
+            .string()
+            .min(1, { message: "Confirm Password is required" })
+    })
+    .refine((data) => data.newPassword === data.confirmedNewPassword, {
+        message: "Passwords do not match",
+        path: ["confirmedNewPassword"]
+    })
+    .refine((data) => data.googleAuth === true && data.currentPassword === "", {
+        message: "Current Password is required",
+        path: ["currentPassword"]
+    });
+
+export type ChangePasswordFormData = z.infer<typeof changePasswordSchema>;

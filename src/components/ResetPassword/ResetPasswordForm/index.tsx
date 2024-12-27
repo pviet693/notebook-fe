@@ -28,7 +28,7 @@ export default function ResetPasswordForm() {
         verifyOTPResetPasswordMutation,
         resetPasswordMutation,
         isRequestOTPPending,
-        isVerifyPending,
+        isVerifyOTPPending,
         isResetPasswordPending
     } = useResetPasswordMutation();
 
@@ -169,7 +169,7 @@ export default function ResetPasswordForm() {
                         <OTPStep
                             onSubmit={handleOTPSubmit}
                             onResendOTP={handleResendOTP}
-                            isVerifyPending={isVerifyPending}
+                            isVerifyPending={isVerifyOTPPending}
                             isResendPending={isRequestOTPPending}
                         />
                     </TabsContent>
