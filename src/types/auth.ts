@@ -56,3 +56,32 @@ export const signInFormSchema = z.object({
 });
 
 export type SignInFormData = z.infer<typeof signInFormSchema>;
+
+export const emailResetPasswordSchema = z.object({
+    email: z.string().email({ message: "Please enter a valid email address." })
+});
+
+export const otpSchema = z.object({
+    otp: z.string().length(6, { message: "OTP must be 6 characters long." })
+});
+
+export const resetPasswordSchema = z
+    .object({
+        newPassword: z
+            .string()
+            .min(1, { message: "Password is required" })
+            .min(8, {
+                message: "Password must be at least 8 characters long."
+            }),
+            confirmedNewPassword: z
+            .string()
+            .min(1, { message: "Confirm Password is required" })
+    })
+    .refine((data) => data.newPassword === data.confirmedNewPassword, {
+        message: "Passwords do not match",
+        path: ["confirmedNewPassword"]
+    });
+
+export type ResetPasswordFormData = z.infer<typeof emailResetPasswordSchema> &
+    z.infer<typeof otpSchema> &
+    z.infer<typeof resetPasswordSchema>;

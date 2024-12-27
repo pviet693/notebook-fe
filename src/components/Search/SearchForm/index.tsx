@@ -11,6 +11,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 interface SearchFormProps {
     categories: { id: string; name: string; slug: string }[];
@@ -24,7 +25,11 @@ interface SearchFilters {
     authors: string[];
 }
 
-export default function SearchForm({ categories, authors, initialValue }: SearchFormProps) {
+export default function SearchForm({
+    categories,
+    authors,
+    initialValue
+}: SearchFormProps) {
     const navigate = useNavigate({ from: "/search" });
     const { control, handleSubmit, watch, setValue } = useForm<SearchFilters>({
         defaultValues: initialValue
@@ -150,38 +155,47 @@ export default function SearchForm({ categories, authors, initialValue }: Search
                                 Clear
                             </Button>
                         </div>
-                        {filteredCategories.map((category) => (
-                            <label
-                                key={category.slug}
-                                className="flex items-center space-x-2 p-2 hover:bg-accent cursor-pointer"
-                            >
-                                <Controller
-                                    name="categories"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Checkbox
-                                            checked={field.value.includes(
-                                                category.slug
+                        <ScrollArea>
+                            <div className="max-h-[300px]">
+                                {filteredCategories.map((category) => (
+                                    <label
+                                        key={category.slug}
+                                        className="flex items-center space-x-2 p-2 hover:bg-accent cursor-pointer"
+                                    >
+                                        <Controller
+                                            name="categories"
+                                            control={control}
+                                            render={({ field }) => (
+                                                <Checkbox
+                                                    checked={field.value.includes(
+                                                        category.slug
+                                                    )}
+                                                    onCheckedChange={(
+                                                        checked
+                                                    ) => {
+                                                        const updatedValue =
+                                                            checked
+                                                                ? [
+                                                                      ...field.value,
+                                                                      category.slug
+                                                                  ]
+                                                                : field.value.filter(
+                                                                      (slug) =>
+                                                                          slug !==
+                                                                          category.slug
+                                                                  );
+                                                        field.onChange(
+                                                            updatedValue
+                                                        );
+                                                    }}
+                                                />
                                             )}
-                                            onCheckedChange={(checked) => {
-                                                const updatedValue = checked
-                                                    ? [
-                                                          ...field.value,
-                                                          category.slug
-                                                      ]
-                                                    : field.value.filter(
-                                                          (slug) =>
-                                                              slug !==
-                                                              category.slug
-                                                      );
-                                                field.onChange(updatedValue);
-                                            }}
                                         />
-                                    )}
-                                />
-                                <span>{category.name}</span>
-                            </label>
-                        ))}
+                                        <span>{category.name}</span>
+                                    </label>
+                                ))}
+                            </div>
+                        </ScrollArea>
                     </div>
                 </PopoverContent>
             </Popover>

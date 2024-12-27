@@ -239,7 +239,7 @@ export default function SignInForm() {
 
                     <div className="text-sm text-right">
                         <Link
-                            href="/forgot-password"
+                            href="/reset-password"
                             className="text-primary hover:underline"
                         >
                             Forgot password?
