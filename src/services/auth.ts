@@ -1,5 +1,11 @@
 import axiosInstance from "@/lib/api";
-import { ApiResponse, SignInFormData, SignUpFormData, User } from "@/types";
+import type {
+    ApiResponse,
+    ChangePasswordFormData,
+    SignInFormData,
+    SignUpFormData,
+    User
+} from "@/types";
 
 export const signUp = async (payload: SignUpFormData) => {
     const url = `/users/sign-up`;
@@ -49,7 +55,10 @@ export const requestOTPResetPassword = async (payload: { email: string }) => {
     return response.data;
 };
 
-export const verifyOTPResetPassword = async (payload: { otp: string, email: string }) => {
+export const verifyOTPResetPassword = async (payload: {
+    otp: string;
+    email: string;
+}) => {
     const url = `/users/verify-otp-reset-password`;
 
     const response = await axiosInstance.post(url, payload);
@@ -57,10 +66,41 @@ export const verifyOTPResetPassword = async (payload: { otp: string, email: stri
     return response.data;
 };
 
-export const resetPassword = async (payload: { email: string, newPassword: string, confirmedNewPassword: string }) => {
+export const requestOTPChangePassword = async (payload: { email: string }) => {
+    const url = `/users/request-otp-change-password`;
+
+    const response = await axiosInstance.post(url, payload);
+
+    return response.data;
+};
+
+export const verifyOTPChangePassword = async (payload: {
+    otp: string;
+    email: string;
+}) => {
+    const url = `/users/verify-otp-change-password`;
+
+    const response = await axiosInstance.post(url, payload);
+
+    return response.data;
+};
+
+export const resetPassword = async (payload: {
+    email: string;
+    newPassword: string;
+    confirmedNewPassword: string;
+}) => {
     const url = `/users/reset-password`;
 
     const response = await axiosInstance.post(url, payload);
 
     return response.data;
+};
+
+export const changePassword = async (payload: ChangePasswordFormData) => {
+    const url = "/users/change-password";
+
+    const response = await axiosInstance.put(url, payload);
+
+    return response.data as ApiResponse;
 };

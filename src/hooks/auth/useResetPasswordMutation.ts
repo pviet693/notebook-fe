@@ -6,7 +6,7 @@ export const useResetPasswordMutation = () => {
         mutationFn: requestOTPResetPassword
     });
 
-    const { mutate: verifyOTPResetPasswordMutation, isPending: isVerifyPending } = useMutation({
+    const { mutate: verifyOTPResetPasswordMutation, isPending: isVerifyOTPPending } = useMutation({
         mutationFn: verifyOTPResetPassword
     })
 
@@ -19,7 +19,7 @@ export const useResetPasswordMutation = () => {
         verifyOTPResetPasswordMutation,
         resetPasswordMutation,
         isRequestOTPPending,
-        isVerifyPending,
+        isVerifyOTPPending,
         isResetPasswordPending
     };
 };
