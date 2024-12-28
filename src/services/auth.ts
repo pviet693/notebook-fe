@@ -39,8 +39,8 @@ export const googleSignIn = async (payload: { token: string }) => {
     return response.data;
 };
 
-export const getMe = async (userId: string) => {
-    const url = `/users/me/${userId}`;
+export const getMe = async () => {
+    const url = `/users/me`;
 
     const response = await axiosInstance.get(url);
 
