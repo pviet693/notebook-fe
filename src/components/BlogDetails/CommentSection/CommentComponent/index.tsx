@@ -27,7 +27,7 @@ import { Link } from "@tanstack/react-router";
 interface CommentComponentProps {
     comment: Comment;
     level: number;
-    userId: string;
+    userId: string | undefined;
     blogId: string;
     isReply?: boolean;
 }
@@ -72,7 +72,7 @@ const CommentComponent: React.FC<CommentComponentProps> = ({
     const handleSubmitReply = (content: string) => {
         const payload: CommentAdd = {
             comment: content,
-            userId,
+            userId: userId!,
             blogId,
             parentCommentId: comment.id
         };

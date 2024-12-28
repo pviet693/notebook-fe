@@ -22,9 +22,9 @@ interface BlogInteractionsProps {
 }
 
 const BlogInteractions: React.FC<BlogInteractionsProps> = ({ blogId, blogTitle }) => {
-    const { userId } = useAuthContext();
+    const { user } = useAuthContext();
     const { mutate: likeBlog } = useLikeMutation();
-    const { isLiked, likeCount } = useLikeQuery({ userId, blogId });
+    const { isLiked, likeCount } = useLikeQuery({ userId: user?.id, blogId });
     const { data: countCommentsData } = useCountCommentsQuery({ blogId });
     const queryClient = useQueryClient();
 
@@ -32,7 +32,7 @@ const BlogInteractions: React.FC<BlogInteractionsProps> = ({ blogId, blogTitle }
         likeBlog(blogId, {
             onSuccess: () => {
                 queryClient.invalidateQueries({
-                    queryKey: [QUERY_KEY.HAS_LIKED, blogId, userId],
+                    queryKey: [QUERY_KEY.HAS_LIKED, blogId, user?.id],
                     exact: true,
                     refetchType: "active"
                 });

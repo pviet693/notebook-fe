@@ -1,4 +1,4 @@
-import { AUTH_TOKEN, USER_ID } from "@/constants";
+import { AUTH_TOKEN } from "@/constants";
 import { useGetMeQuery } from "@/hooks/auth/useGetMeQuery";
 import { User } from "@/types";
 import { useEffect, useState } from "react";
@@ -8,7 +8,6 @@ const useAuth = () => {
 
     const signout = () => {
         localStorage.removeItem(AUTH_TOKEN);
-        localStorage.removeItem(USER_ID);
         setUser(null);
     };
 

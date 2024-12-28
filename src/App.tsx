@@ -43,10 +43,17 @@ function App() {
         <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID}>
             <ThemeProvider attribute="class">
                 <QueryClientProvider client={queryClient}>
-                    <AuthProvider>
-                        <RouterProvider router={router} />
-                        <Toaster />
-                    </AuthProvider>
+                    <AuthProvider
+                        render={(auth) => (
+                            <>
+                                <RouterProvider
+                                    router={router}
+                                    context={{ auth }}
+                                />
+                                <Toaster />
+                            </>
+                        )}
+                    />
                 </QueryClientProvider>
             </ThemeProvider>
         </GoogleOAuthProvider>

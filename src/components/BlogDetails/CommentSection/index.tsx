@@ -16,7 +16,7 @@ interface CommentSectionProps {
 }
 
 const CommentSection: React.FC<CommentSectionProps> = ({ blog }) => {
-    const { userId } = useAuthContext();
+    const { user } = useAuthContext();
     const queryClient = useQueryClient();
     const { newComment, setNewComment } = useCommentSocket({ blogId: blog.id });
     const {
@@ -33,7 +33,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ blog }) => {
     const handleSubmitComment = (comment: string, parentCommentId?: string) => {
         const payload: CommentAdd = {
             comment,
-            userId,
+            userId: user!.id,
             blogId: blog.id,
             parentCommentId: parentCommentId
         };
@@ -125,7 +125,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ blog }) => {
                             key={comment.id}
                             comment={comment}
                             blogId={blog.id}
-                            userId={userId}
+                            userId={user!.id}
                             level={1}
                             isReply
                         />
