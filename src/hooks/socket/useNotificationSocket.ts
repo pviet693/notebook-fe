@@ -8,7 +8,7 @@ const socket = io(`${import.meta.env.VITE_BASE_URL}/notifications`, {
 });
 
 export function useNotificationSocket() {
-    const { userId } = useAuthContext();
+    const { user } = useAuthContext();
     const hasConnected = useRef(false);
     const [hasNewNotification, setHasNewNotification] = useState(false);
 
@@ -19,13 +19,13 @@ export function useNotificationSocket() {
     }, []);
 
     useEffect(() => {
-        if (userId && !hasConnected.current) {
+        if (user?.id && !hasConnected.current) {
             hasConnected.current = true;
-            socket.emit("joinRoom", userId);
+            socket.emit("joinRoom", user?.id);
 
             socket.on("notification", handleNewNotification);
         }
-    }, [userId, handleNewNotification]);
+    }, [user?.id, handleNewNotification]);
 
     return { hasNewNotification, setHasNewNotification };
 }
