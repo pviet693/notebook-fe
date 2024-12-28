@@ -1,13 +1,7 @@
 import NotFound from "@/components/NotFound";
 import { AuthContextType } from "@/hooks/auth/useAuth";
-import useAuthContext from "@/hooks/auth/useAuthContext";
-import { useGetMeQuery } from "@/hooks/auth/useGetMeQuery";
 import { useIncrWebVisitMutation } from "@/hooks/stats/useIncrWebVisitMutation";
-import {
-    createRootRouteWithContext,
-    Outlet,
-    useRouter
-} from "@tanstack/react-router";
+import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
 import { useEffect } from "react";
 
 type RouterContext = {
@@ -20,17 +14,7 @@ export const Route = createRootRouteWithContext<RouterContext>()({
 });
 
 function RouteComponent() {
-    const router = useRouter();
-    const { userId, setUser } = useAuthContext();
-    const { data: userData, isSuccess } = useGetMeQuery(userId);
     const { mutate: incrWebVisitMutation } = useIncrWebVisitMutation();
-
-    useEffect(() => {
-        if (isSuccess && userData?.data) {
-            setUser(userData.data);
-            router.invalidate();
-        }
-    }, [isSuccess, userData, setUser, router]);
 
     useEffect(() => {
         const hasVisitedPage = sessionStorage.getItem("hasVisitedPage");

@@ -21,7 +21,6 @@ import { AvatarUpload } from "@/components/EditProfile";
 import Container from "@/components/Container";
 import { Badge } from "@/components/ui/badge";
 import { socials } from "@/constants";
-import { useGetMeQuery } from "@/hooks/auth/useGetMeQuery";
 import { useEffect } from "react";
 import useAuthContext from "@/hooks/auth/useAuthContext";
 import { useEditProfileMutation } from "@/hooks/user/useEditProfileMutation";
@@ -32,8 +31,7 @@ import { type User } from "@/types";
 
 export default function EditProfilePage() {
     const { toast } = useToast();
-    const { userId, setUser } = useAuthContext();
-    const { data, isSuccess } = useGetMeQuery(userId);
+    const { setUser, user, isSuccess } = useAuthContext();
     const { mutate: editProfileMutation, isPending: isEditProfilePending } =
         useEditProfileMutation();
     const { mutate: uploadFile, isPending: isUploadFilePending } =
@@ -130,18 +128,18 @@ export default function EditProfilePage() {
     useEffect(() => {
         if (isSuccess) {
             const formData = {
-                profileImg: data?.data?.profile_img,
+                profileImg: user?.profile_img,
                 profileImgFile: null,
-                fullname: data?.data?.fullname,
-                email: data?.data?.email,
-                username: data?.data?.username,
-                bio: data?.data?.bio,
-                youtube: data?.data?.youtube,
-                instagram: data?.data?.instagram,
-                facebook: data?.data?.facebook,
-                twitter: data?.data?.twitter,
-                github: data?.data?.github,
-                website: data?.data?.website
+                fullname: user?.fullname,
+                email: user?.email,
+                username: user?.username,
+                bio: user?.bio,
+                youtube: user?.youtube,
+                instagram: user?.instagram,
+                facebook: user?.facebook,
+                twitter: user?.twitter,
+                github: user?.github,
+                website: user?.website
             };
             form.reset(formData);
         }
@@ -214,7 +212,7 @@ export default function EditProfilePage() {
                                                 {...field}
                                             />
                                         </FormControl>
-                                        {data?.data?.email_verified ? (
+                                        {user?.email_verified ? (
                                             <Badge
                                                 variant="outline"
                                                 className="h-8 px-3 flex items-center gap-1 bg-[#f2f8f7] max-md:text-xs rounded-md text-primary"

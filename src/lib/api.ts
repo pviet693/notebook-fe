@@ -27,8 +27,8 @@ axiosInstance.interceptors.request.use(
 axiosInstance.interceptors.response.use(
     (response) => response,
     (error) => {
-        if (error.response.status === 401) {
-            console.log("Token expired or invalid");
+        if (error?.response?.status === 401) {
+            // TODO
         }
         return Promise.reject(error);
     }
