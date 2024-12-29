@@ -15,7 +15,7 @@ jobs:
         env:
             VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }} # VITE_BASE_URL environment variable for build
             VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }} # VITE_GOOGLE_CLIENT_ID environment variable for build
-            VITE_BASE: ${{ secrets.VITE_BASE_URL }} # VITE_BASE environment variable for build
+            VITE_BASE: ${{ secrets.VITE_BASE }} # VITE_BASE environment variable for build
 
         steps:
             - name: Check out the repository
