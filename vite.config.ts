@@ -6,6 +6,7 @@ import commonjs from "vite-plugin-commonjs";
 
 // https://vite.dev/config/
 export default defineConfig({
+    base: "./dist",
     plugins: [TanStackRouterVite(), react(), commonjs()],
     resolve: {
         alias: {
