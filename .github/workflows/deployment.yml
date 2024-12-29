@@ -60,23 +60,18 @@ jobs:
             AWS_REGION: ${{ secrets.AWS_REGION }} # AWS region
 
         steps:
-            - name: Setup AWS CLI
-              run: |
-                  curl "https://d1vvhvl2y92vvt.cloudfront.net/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-                  unzip awscliv2.zip
-                  sudo ./aws/install
-
-            - name: Configure AWS CLI
-              run: |
-                  aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
-                  aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-                  aws configure set region $AWS_REGION
-
             - name: Download build files from artifacts
               uses: actions/download-artifact@v4
               with:
                   name: build-artifacts
                   path: ./dist
+
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                  aws-access-key-id: $AWS_ACCESS_KEY_ID
+                  aws-secret-access-key: $AWS_SECRET_ACCESS_KEY
+                  aws-region: $AWS_REGION
 
             - name: Upload build files to S3
               run: |
