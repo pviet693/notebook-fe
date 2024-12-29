@@ -53,24 +53,19 @@ jobs:
         if: success() # Only run the deploy job if the build was successful
 
         env:
-            AWS_CLOUDFRONT_URL: ${{ secrets.AWS_CLOUDFRONT_URL }} # AWS CloudFront url
-            AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }} # AWS S3 Bucket name
-            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }} # AWS Access Key ID
-            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # AWS Secret Access Key
-            AWS_REGION: ${{ secrets.AWS_REGION }} # AWS region
+            EC2_HOST: ${{ secrets.EC2_HOST }} # EC2 instance public IP address or domain name
+            EC2_USER: ${{ secrets.EC2_USER }} # SSH user (e.g., 'ubuntu')
+            EC2_PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }} # Private key for SSH access
+            DEPLOY_DIRECTORY: ${{ secrets.DEPLOY_DIRECTORY }} # Deployment directory on the EC2 instance
 
         steps:
-            - name: Setup AWS CLI
+            - name: Setup SSH key
               run: |
-                  curl "https://d1vvhvl2y92vvt.cloudfront.net/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
-                  unzip awscliv2.zip
-                  sudo ./aws/install
-
-            - name: Configure AWS CLI
-              run: |
-                  aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
-                  aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-                  aws configure set region $AWS_REGION
+                  # Create the SSH directory and configure the private key
+                  mkdir -p ~/.ssh
+                  echo "${{ secrets.EC2_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+                  chmod 600 ~/.ssh/id_rsa
+                  ssh-keyscan -H ${EC2_HOST} >> ~/.ssh/known_hosts
 
             - name: Download build files from artifacts
               uses: actions/download-artifact@v4
@@ -78,10 +73,12 @@ jobs:
                   name: build-artifacts
                   path: ./dist
 
-            - name: Upload build files to S3
+            - name: Copy build files to EC2 host nginx folder
               run: |
-                  aws s3 cp ./dist/ s3://$AWS_S3_BUCKET_NAME/dist/ --recursive --delete --acl public-read
+                  scp -i ~/.ssh/id_rsa -r ./dist/* ${EC2_USER}@${EC2_HOST}:/var/www/${DEPLOY_DIRECTORY}
 
-            - name: Invalidate CloudFront cache
+            - name: Restart nginx on EC2
               run: |
-                  aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_URL} --paths "/dist/index.html"
+                  ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${EC2_USER}@${EC2_HOST} << EOF
+                      sudo systemctl restart nginx
+                  EOF
