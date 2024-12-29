@@ -15,6 +15,7 @@ jobs:
         env:
             VITE_BASE_URL: ${{ secrets.VITE_BASE_URL }} # VITE_BASE_URL environment variable for build
             VITE_GOOGLE_CLIENT_ID: ${{ secrets.VITE_GOOGLE_CLIENT_ID }} # VITE_GOOGLE_CLIENT_ID environment variable for build
+            VITE_BASE: ${{ secrets.VITE_BASE }} # VITE_BASE environment variable for build
 
         steps:
             - name: Check out the repository
@@ -39,6 +40,7 @@ jobs:
                   touch .env
                   echo "VITE_BASE_URL=${VITE_BASE_URL}" > .env
                   echo "VITE_GOOGLE_CLIENT_ID=${VITE_GOOGLE_CLIENT_ID}" >> .env
+                  echo "VITE_BASE=${VITE_BASE}" >> .env
                   npm run build  # Build the application
 
             - name: Upload build files as artifacts
@@ -53,32 +55,30 @@ jobs:
         if: success() # Only run the deploy job if the build was successful
 
         env:
-            EC2_HOST: ${{ secrets.EC2_HOST }} # EC2 instance public IP address or domain name
-            EC2_USER: ${{ secrets.EC2_USER }} # SSH user (e.g., 'ubuntu')
-            EC2_PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }} # Private key for SSH access
-            DEPLOY_DIRECTORY: ${{ secrets.DEPLOY_DIRECTORY }} # Deployment directory on the EC2 instance
+            AWS_CLOUDFRONT_ID: ${{ secrets.AWS_CLOUDFRONT_ID }} # AWS CloudFront ID
+            AWS_S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET_NAME }} # AWS S3 Bucket name
+            AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }} # AWS Access Key ID
+            AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }} # AWS Secret Access Key
+            AWS_REGION: ${{ secrets.AWS_REGION }} # AWS region
 
         steps:
-            - name: Setup SSH key
-              run: |
-                  # Create the SSH directory and configure the private key
-                  mkdir -p ~/.ssh
-                  echo "${{ secrets.EC2_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-                  chmod 600 ~/.ssh/id_rsa
-                  ssh-keyscan -H ${EC2_HOST} >> ~/.ssh/known_hosts
-
             - name: Download build files from artifacts
               uses: actions/download-artifact@v4
               with:
                   name: build-artifacts
                   path: ./dist
 
-            - name: Copy build files to EC2 host nginx folder
-              run: |
-                  scp -i ~/.ssh/id_rsa -r ./dist/* ${EC2_USER}@${EC2_HOST}:/var/www/${DEPLOY_DIRECTORY}
+            - name: Configure AWS credentials
+              uses: aws-actions/configure-aws-credentials@v4
+              with:
+                  aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+                  aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+                  aws-region: ${{ secrets.AWS_REGION }}
 
-            - name: Restart nginx on EC2
+            - name: Upload build files to S3
               run: |
-                  ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${EC2_USER}@${EC2_HOST} << EOF
-                      sudo systemctl restart nginx
-                  EOF
+                  aws s3 sync ./dist/ s3://$AWS_S3_BUCKET_NAME/dist/ --delete
+
+            - name: Invalidate CloudFront cache
+              run: |
+                  aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_ID} --paths "/dist/*"
