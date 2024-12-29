@@ -75,7 +75,7 @@ jobs:
 
             - name: Upload build files to S3
               run: |
-                  aws s3 cp ./dist/ s3://$AWS_S3_BUCKET_NAME/dist/ --recursive --acl public-read
+                  aws s3 sync ./dist/ s3://$AWS_S3_BUCKET_NAME/dist/ --recursive --delete --acl public-read
 
             - name: Invalidate CloudFront cache
               run: |
