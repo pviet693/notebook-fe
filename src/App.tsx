@@ -15,7 +15,7 @@ const router = createRouter({
         auth: {
             user: null,
             setUser: () => {},
-            isLoggedIn: () => false,
+            isLoggedIn: false,
             signin: () => {},
             signout: () => {},
             isSuccess: false
