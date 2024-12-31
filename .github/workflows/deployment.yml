@@ -57,6 +57,7 @@ jobs:
             EC2_USER: ${{ secrets.EC2_USER }} # SSH user (e.g., 'ubuntu')
             EC2_PRIVATE_KEY: ${{ secrets.EC2_PRIVATE_KEY }} # Private key for SSH access
             DEPLOY_DIRECTORY: ${{ secrets.DEPLOY_DIRECTORY }} # Deployment directory on the EC2 instance
+            AWS_CLOUDFRONT_ID: ${{ secrets.AWS_CLOUDFRONT_ID }} # AWS CloudFront ID
 
         steps:
             - name: Setup SSH key
@@ -82,3 +83,7 @@ jobs:
                   ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${EC2_USER}@${EC2_HOST} << EOF
                       sudo systemctl restart nginx
                   EOF
+            
+            - name: Invalidate CloudFront cache
+              run: |
+                  aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_ID} --paths "/*"

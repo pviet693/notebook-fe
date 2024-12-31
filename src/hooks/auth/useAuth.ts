@@ -26,9 +26,6 @@ const useAuth = () => {
         }
     }, [isSuccess, userData, setUser]);
 
-    console.log(isSuccess, user);
-
-
     return { setUser, user, isLoggedIn: isSuccess && user, signin, signout, isSuccess };
 };
 
