@@ -9,11 +9,13 @@ const useAuth = () => {
     const signout = () => {
         localStorage.removeItem(AUTH_TOKEN);
         setUser(null);
+        refetch();
     };
 
     const signin = (token: string, userData: User) => {
         localStorage.setItem(AUTH_TOKEN, token);
         setUser(userData);
+        refetch();
     };
 
     const { isSuccess, data: userData, refetch } = useGetMeQuery();
@@ -24,13 +26,10 @@ const useAuth = () => {
         }
     }, [isSuccess, userData, setUser]);
 
-    useEffect(() => {
-        refetch();
-    }, [user?.id, refetch]);
+    console.log(isSuccess, user);
 
-    const isLoggedIn = () => !!user?.id;
 
-    return { setUser, user, isLoggedIn, signin, signout, isSuccess };
+    return { setUser, user, isLoggedIn: isSuccess && user, signin, signout, isSuccess };
 };
 
 export default useAuth;
