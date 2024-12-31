@@ -70,7 +70,7 @@ export default function Navbar() {
                         </Button>
                     </Link>
 
-                    {isLoggedIn() ? (
+                    {isLoggedIn ? (
                         <>
                             <NotificationBell />
                             <DropdownMenu>
