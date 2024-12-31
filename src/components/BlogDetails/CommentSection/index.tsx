@@ -125,7 +125,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ blog }) => {
                             key={comment.id}
                             comment={comment}
                             blogId={blog.id}
-                            userId={user!.id}
+                            userId={user?.id}
                             level={1}
                             isReply
                         />
