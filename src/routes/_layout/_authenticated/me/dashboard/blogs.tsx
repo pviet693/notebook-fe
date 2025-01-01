@@ -1,4 +1,3 @@
-import DashboardBlogs from "@/pages/DashboardBlogs";
 import { createFileRoute } from "@tanstack/react-router";
 
 export type BlogFilters = {
@@ -10,7 +9,6 @@ export type BlogFilters = {
 export const Route = createFileRoute(
     "/_layout/_authenticated/me/dashboard/blogs"
 )({
-    component: DashboardBlogs,
     validateSearch: (search: Record<string, unknown>): BlogFilters => {
         return {
             title: search.title as string,

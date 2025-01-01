@@ -1,4 +1,3 @@
-import SearchPage from "@/pages/Search";
 import { createFileRoute } from "@tanstack/react-router";
 
 export type BlogFilters = {
@@ -8,7 +7,6 @@ export type BlogFilters = {
 };
 
 export const Route = createFileRoute("/_layout/search")({
-    component: SearchPage,
     validateSearch: (search: Record<string, unknown>): BlogFilters => {
         return {
             title: search.title as string,

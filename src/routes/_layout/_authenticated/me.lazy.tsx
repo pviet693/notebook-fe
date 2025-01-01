@@ -10,11 +10,11 @@ import {
 import { useIsMobile } from "@/hooks/use-mobile";
 import { cn } from "@/lib/utils";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import { createFileRoute, Link, Outlet } from "@tanstack/react-router";
+import { createLazyFileRoute, Link, Outlet } from "@tanstack/react-router";
 import { FileText, Key, Menu, User2, X } from "lucide-react";
 import { Dispatch, useState } from "react";
 
-export const Route = createFileRoute("/_layout/_authenticated/me")({
+export const Route = createLazyFileRoute("/_layout/_authenticated/me")({
     component: MeLayout
 });
 
