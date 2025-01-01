@@ -20,7 +20,8 @@ const router = createRouter({
             signout: () => {},
             isSuccess: false
         }
-    }
+    },
+    defaultPreload: "viewport"
 });
 
 // Register the router instance for type safety
