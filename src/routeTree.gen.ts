@@ -8,6 +8,8 @@
 // You should NOT make any changes in this file as it will be overwritten.
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
+import { createFileRoute } from '@tanstack/react-router'
+
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
@@ -16,17 +18,34 @@ import { Route as AuthImport } from './routes/_auth'
 import { Route as LayoutIndexImport } from './routes/_layout/index'
 import { Route as LayoutSearchImport } from './routes/_layout/search'
 import { Route as LayoutAuthenticatedImport } from './routes/_layout/_authenticated'
-import { Route as AuthSignupImport } from './routes/_auth/signup'
-import { Route as AuthSigninImport } from './routes/_auth/signin'
-import { Route as AuthResetPasswordImport } from './routes/_auth/reset-password'
-import { Route as LayoutBlogsBlogSlugImport } from './routes/_layout/blogs/$blogSlug'
-import { Route as LayoutAuthorsUsernameImport } from './routes/_layout/authors/$username'
-import { Route as LayoutAuthenticatedMeImport } from './routes/_layout/_authenticated/me'
-import { Route as LayoutAuthenticatedBlogsCreateImport } from './routes/_layout/_authenticated/blogs/create'
-import { Route as LayoutAuthenticatedMeSettingsProfileImport } from './routes/_layout/_authenticated/me/settings/profile'
-import { Route as LayoutAuthenticatedMeSettingsPasswordImport } from './routes/_layout/_authenticated/me/settings/password'
 import { Route as LayoutAuthenticatedMeDashboardBlogsImport } from './routes/_layout/_authenticated/me/dashboard/blogs'
-import { Route as LayoutAuthenticatedBlogsBlogIdEditImport } from './routes/_layout/_authenticated/blogs/$blogId.edit'
+
+// Create Virtual Routes
+
+const AuthSignupLazyImport = createFileRoute('/_auth/signup')()
+const AuthSigninLazyImport = createFileRoute('/_auth/signin')()
+const AuthResetPasswordLazyImport = createFileRoute('/_auth/reset-password')()
+const LayoutBlogsBlogSlugLazyImport = createFileRoute(
+  '/_layout/blogs/$blogSlug',
+)()
+const LayoutAuthorsUsernameLazyImport = createFileRoute(
+  '/_layout/authors/$username',
+)()
+const LayoutAuthenticatedMeLazyImport = createFileRoute(
+  '/_layout/_authenticated/me',
+)()
+const LayoutAuthenticatedBlogsCreateLazyImport = createFileRoute(
+  '/_layout/_authenticated/blogs/create',
+)()
+const LayoutAuthenticatedMeSettingsProfileLazyImport = createFileRoute(
+  '/_layout/_authenticated/me/settings/profile',
+)()
+const LayoutAuthenticatedMeSettingsPasswordLazyImport = createFileRoute(
+  '/_layout/_authenticated/me/settings/password',
+)()
+const LayoutAuthenticatedBlogsBlogIdEditLazyImport = createFileRoute(
+  '/_layout/_authenticated/blogs/$blogId/edit',
+)()
 
 // Create/Update Routes
 
@@ -46,87 +65,117 @@ const LayoutIndexRoute = LayoutIndexImport.update({
   getParentRoute: () => LayoutRoute,
 } as any)
 
+const AuthSignupLazyRoute = AuthSignupLazyImport.update({
+  id: '/signup',
+  path: '/signup',
+  getParentRoute: () => AuthRoute,
+} as any).lazy(() => import('./routes/_auth/signup.lazy').then((d) => d.Route))
+
+const AuthSigninLazyRoute = AuthSigninLazyImport.update({
+  id: '/signin',
+  path: '/signin',
+  getParentRoute: () => AuthRoute,
+} as any).lazy(() => import('./routes/_auth/signin.lazy').then((d) => d.Route))
+
+const AuthResetPasswordLazyRoute = AuthResetPasswordLazyImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => AuthRoute,
+} as any).lazy(() =>
+  import('./routes/_auth/reset-password.lazy').then((d) => d.Route),
+)
+
 const LayoutSearchRoute = LayoutSearchImport.update({
   id: '/search',
   path: '/search',
   getParentRoute: () => LayoutRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_layout/search.lazy').then((d) => d.Route),
+)
 
 const LayoutAuthenticatedRoute = LayoutAuthenticatedImport.update({
   id: '/_authenticated',
   getParentRoute: () => LayoutRoute,
 } as any)
 
-const AuthSignupRoute = AuthSignupImport.update({
-  id: '/signup',
-  path: '/signup',
-  getParentRoute: () => AuthRoute,
-} as any)
-
-const AuthSigninRoute = AuthSigninImport.update({
-  id: '/signin',
-  path: '/signin',
-  getParentRoute: () => AuthRoute,
-} as any)
-
-const AuthResetPasswordRoute = AuthResetPasswordImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => AuthRoute,
-} as any)
-
-const LayoutBlogsBlogSlugRoute = LayoutBlogsBlogSlugImport.update({
+const LayoutBlogsBlogSlugLazyRoute = LayoutBlogsBlogSlugLazyImport.update({
   id: '/blogs/$blogSlug',
   path: '/blogs/$blogSlug',
   getParentRoute: () => LayoutRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_layout/blogs/$blogSlug.lazy').then((d) => d.Route),
+)
 
-const LayoutAuthorsUsernameRoute = LayoutAuthorsUsernameImport.update({
+const LayoutAuthorsUsernameLazyRoute = LayoutAuthorsUsernameLazyImport.update({
   id: '/authors/$username',
   path: '/authors/$username',
   getParentRoute: () => LayoutRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_layout/authors/$username.lazy').then((d) => d.Route),
+)
 
-const LayoutAuthenticatedMeRoute = LayoutAuthenticatedMeImport.update({
+const LayoutAuthenticatedMeLazyRoute = LayoutAuthenticatedMeLazyImport.update({
   id: '/me',
   path: '/me',
   getParentRoute: () => LayoutAuthenticatedRoute,
-} as any)
+} as any).lazy(() =>
+  import('./routes/_layout/_authenticated/me.lazy').then((d) => d.Route),
+)
 
-const LayoutAuthenticatedBlogsCreateRoute =
-  LayoutAuthenticatedBlogsCreateImport.update({
+const LayoutAuthenticatedBlogsCreateLazyRoute =
+  LayoutAuthenticatedBlogsCreateLazyImport.update({
     id: '/blogs/create',
     path: '/blogs/create',
     getParentRoute: () => LayoutAuthenticatedRoute,
-  } as any)
+  } as any).lazy(() =>
+    import('./routes/_layout/_authenticated/blogs/create.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
-const LayoutAuthenticatedMeSettingsProfileRoute =
-  LayoutAuthenticatedMeSettingsProfileImport.update({
+const LayoutAuthenticatedMeSettingsProfileLazyRoute =
+  LayoutAuthenticatedMeSettingsProfileLazyImport.update({
     id: '/settings/profile',
     path: '/settings/profile',
-    getParentRoute: () => LayoutAuthenticatedMeRoute,
-  } as any)
+    getParentRoute: () => LayoutAuthenticatedMeLazyRoute,
+  } as any).lazy(() =>
+    import('./routes/_layout/_authenticated/me/settings/profile.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
-const LayoutAuthenticatedMeSettingsPasswordRoute =
-  LayoutAuthenticatedMeSettingsPasswordImport.update({
+const LayoutAuthenticatedMeSettingsPasswordLazyRoute =
+  LayoutAuthenticatedMeSettingsPasswordLazyImport.update({
     id: '/settings/password',
     path: '/settings/password',
-    getParentRoute: () => LayoutAuthenticatedMeRoute,
-  } as any)
+    getParentRoute: () => LayoutAuthenticatedMeLazyRoute,
+  } as any).lazy(() =>
+    import('./routes/_layout/_authenticated/me/settings/password.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const LayoutAuthenticatedBlogsBlogIdEditLazyRoute =
+  LayoutAuthenticatedBlogsBlogIdEditLazyImport.update({
+    id: '/blogs/$blogId/edit',
+    path: '/blogs/$blogId/edit',
+    getParentRoute: () => LayoutAuthenticatedRoute,
+  } as any).lazy(() =>
+    import('./routes/_layout/_authenticated/blogs/$blogId.edit.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 const LayoutAuthenticatedMeDashboardBlogsRoute =
   LayoutAuthenticatedMeDashboardBlogsImport.update({
     id: '/dashboard/blogs',
     path: '/dashboard/blogs',
-    getParentRoute: () => LayoutAuthenticatedMeRoute,
-  } as any)
-
-const LayoutAuthenticatedBlogsBlogIdEditRoute =
-  LayoutAuthenticatedBlogsBlogIdEditImport.update({
-    id: '/blogs/$blogId/edit',
-    path: '/blogs/$blogId/edit',
-    getParentRoute: () => LayoutAuthenticatedRoute,
-  } as any)
+    getParentRoute: () => LayoutAuthenticatedMeLazyRoute,
+  } as any).lazy(() =>
+    import('./routes/_layout/_authenticated/me/dashboard/blogs.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 // Populate the FileRoutesByPath interface
 
@@ -146,27 +195,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutImport
       parentRoute: typeof rootRoute
     }
-    '/_auth/reset-password': {
-      id: '/_auth/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof AuthResetPasswordImport
-      parentRoute: typeof AuthImport
-    }
-    '/_auth/signin': {
-      id: '/_auth/signin'
-      path: '/signin'
-      fullPath: '/signin'
-      preLoaderRoute: typeof AuthSigninImport
-      parentRoute: typeof AuthImport
-    }
-    '/_auth/signup': {
-      id: '/_auth/signup'
-      path: '/signup'
-      fullPath: '/signup'
-      preLoaderRoute: typeof AuthSignupImport
-      parentRoute: typeof AuthImport
-    }
     '/_layout/_authenticated': {
       id: '/_layout/_authenticated'
       path: ''
@@ -181,6 +209,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutSearchImport
       parentRoute: typeof LayoutImport
     }
+    '/_auth/reset-password': {
+      id: '/_auth/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof AuthResetPasswordLazyImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/signin': {
+      id: '/_auth/signin'
+      path: '/signin'
+      fullPath: '/signin'
+      preLoaderRoute: typeof AuthSigninLazyImport
+      parentRoute: typeof AuthImport
+    }
+    '/_auth/signup': {
+      id: '/_auth/signup'
+      path: '/signup'
+      fullPath: '/signup'
+      preLoaderRoute: typeof AuthSignupLazyImport
+      parentRoute: typeof AuthImport
+    }
     '/_layout/': {
       id: '/_layout/'
       path: '/'
@@ -192,35 +241,28 @@ declare module '@tanstack/react-router' {
       id: '/_layout/_authenticated/me'
       path: '/me'
       fullPath: '/me'
-      preLoaderRoute: typeof LayoutAuthenticatedMeImport
+      preLoaderRoute: typeof LayoutAuthenticatedMeLazyImport
       parentRoute: typeof LayoutAuthenticatedImport
     }
     '/_layout/authors/$username': {
       id: '/_layout/authors/$username'
       path: '/authors/$username'
       fullPath: '/authors/$username'
-      preLoaderRoute: typeof LayoutAuthorsUsernameImport
+      preLoaderRoute: typeof LayoutAuthorsUsernameLazyImport
       parentRoute: typeof LayoutImport
     }
     '/_layout/blogs/$blogSlug': {
       id: '/_layout/blogs/$blogSlug'
       path: '/blogs/$blogSlug'
       fullPath: '/blogs/$blogSlug'
-      preLoaderRoute: typeof LayoutBlogsBlogSlugImport
+      preLoaderRoute: typeof LayoutBlogsBlogSlugLazyImport
       parentRoute: typeof LayoutImport
     }
     '/_layout/_authenticated/blogs/create': {
       id: '/_layout/_authenticated/blogs/create'
       path: '/blogs/create'
       fullPath: '/blogs/create'
-      preLoaderRoute: typeof LayoutAuthenticatedBlogsCreateImport
-      parentRoute: typeof LayoutAuthenticatedImport
-    }
-    '/_layout/_authenticated/blogs/$blogId/edit': {
-      id: '/_layout/_authenticated/blogs/$blogId/edit'
-      path: '/blogs/$blogId/edit'
-      fullPath: '/blogs/$blogId/edit'
-      preLoaderRoute: typeof LayoutAuthenticatedBlogsBlogIdEditImport
+      preLoaderRoute: typeof LayoutAuthenticatedBlogsCreateLazyImport
       parentRoute: typeof LayoutAuthenticatedImport
     }
     '/_layout/_authenticated/me/dashboard/blogs': {
@@ -228,21 +270,28 @@ declare module '@tanstack/react-router' {
       path: '/dashboard/blogs'
       fullPath: '/me/dashboard/blogs'
       preLoaderRoute: typeof LayoutAuthenticatedMeDashboardBlogsImport
-      parentRoute: typeof LayoutAuthenticatedMeImport
+      parentRoute: typeof LayoutAuthenticatedMeLazyImport
+    }
+    '/_layout/_authenticated/blogs/$blogId/edit': {
+      id: '/_layout/_authenticated/blogs/$blogId/edit'
+      path: '/blogs/$blogId/edit'
+      fullPath: '/blogs/$blogId/edit'
+      preLoaderRoute: typeof LayoutAuthenticatedBlogsBlogIdEditLazyImport
+      parentRoute: typeof LayoutAuthenticatedImport
     }
     '/_layout/_authenticated/me/settings/password': {
       id: '/_layout/_authenticated/me/settings/password'
       path: '/settings/password'
       fullPath: '/me/settings/password'
-      preLoaderRoute: typeof LayoutAuthenticatedMeSettingsPasswordImport
-      parentRoute: typeof LayoutAuthenticatedMeImport
+      preLoaderRoute: typeof LayoutAuthenticatedMeSettingsPasswordLazyImport
+      parentRoute: typeof LayoutAuthenticatedMeLazyImport
     }
     '/_layout/_authenticated/me/settings/profile': {
       id: '/_layout/_authenticated/me/settings/profile'
       path: '/settings/profile'
       fullPath: '/me/settings/profile'
-      preLoaderRoute: typeof LayoutAuthenticatedMeSettingsProfileImport
-      parentRoute: typeof LayoutAuthenticatedMeImport
+      preLoaderRoute: typeof LayoutAuthenticatedMeSettingsProfileLazyImport
+      parentRoute: typeof LayoutAuthenticatedMeLazyImport
     }
   }
 }
@@ -250,50 +299,52 @@ declare module '@tanstack/react-router' {
 // Create and export the route tree
 
 interface AuthRouteChildren {
-  AuthResetPasswordRoute: typeof AuthResetPasswordRoute
-  AuthSigninRoute: typeof AuthSigninRoute
-  AuthSignupRoute: typeof AuthSignupRoute
+  AuthResetPasswordLazyRoute: typeof AuthResetPasswordLazyRoute
+  AuthSigninLazyRoute: typeof AuthSigninLazyRoute
+  AuthSignupLazyRoute: typeof AuthSignupLazyRoute
 }
 
 const AuthRouteChildren: AuthRouteChildren = {
-  AuthResetPasswordRoute: AuthResetPasswordRoute,
-  AuthSigninRoute: AuthSigninRoute,
-  AuthSignupRoute: AuthSignupRoute,
+  AuthResetPasswordLazyRoute: AuthResetPasswordLazyRoute,
+  AuthSigninLazyRoute: AuthSigninLazyRoute,
+  AuthSignupLazyRoute: AuthSignupLazyRoute,
 }
 
 const AuthRouteWithChildren = AuthRoute._addFileChildren(AuthRouteChildren)
 
-interface LayoutAuthenticatedMeRouteChildren {
+interface LayoutAuthenticatedMeLazyRouteChildren {
   LayoutAuthenticatedMeDashboardBlogsRoute: typeof LayoutAuthenticatedMeDashboardBlogsRoute
-  LayoutAuthenticatedMeSettingsPasswordRoute: typeof LayoutAuthenticatedMeSettingsPasswordRoute
-  LayoutAuthenticatedMeSettingsProfileRoute: typeof LayoutAuthenticatedMeSettingsProfileRoute
+  LayoutAuthenticatedMeSettingsPasswordLazyRoute: typeof LayoutAuthenticatedMeSettingsPasswordLazyRoute
+  LayoutAuthenticatedMeSettingsProfileLazyRoute: typeof LayoutAuthenticatedMeSettingsProfileLazyRoute
 }
 
-const LayoutAuthenticatedMeRouteChildren: LayoutAuthenticatedMeRouteChildren = {
-  LayoutAuthenticatedMeDashboardBlogsRoute:
-    LayoutAuthenticatedMeDashboardBlogsRoute,
-  LayoutAuthenticatedMeSettingsPasswordRoute:
-    LayoutAuthenticatedMeSettingsPasswordRoute,
-  LayoutAuthenticatedMeSettingsProfileRoute:
-    LayoutAuthenticatedMeSettingsProfileRoute,
-}
+const LayoutAuthenticatedMeLazyRouteChildren: LayoutAuthenticatedMeLazyRouteChildren =
+  {
+    LayoutAuthenticatedMeDashboardBlogsRoute:
+      LayoutAuthenticatedMeDashboardBlogsRoute,
+    LayoutAuthenticatedMeSettingsPasswordLazyRoute:
+      LayoutAuthenticatedMeSettingsPasswordLazyRoute,
+    LayoutAuthenticatedMeSettingsProfileLazyRoute:
+      LayoutAuthenticatedMeSettingsProfileLazyRoute,
+  }
 
-const LayoutAuthenticatedMeRouteWithChildren =
-  LayoutAuthenticatedMeRoute._addFileChildren(
-    LayoutAuthenticatedMeRouteChildren,
+const LayoutAuthenticatedMeLazyRouteWithChildren =
+  LayoutAuthenticatedMeLazyRoute._addFileChildren(
+    LayoutAuthenticatedMeLazyRouteChildren,
   )
 
 interface LayoutAuthenticatedRouteChildren {
-  LayoutAuthenticatedMeRoute: typeof LayoutAuthenticatedMeRouteWithChildren
-  LayoutAuthenticatedBlogsCreateRoute: typeof LayoutAuthenticatedBlogsCreateRoute
-  LayoutAuthenticatedBlogsBlogIdEditRoute: typeof LayoutAuthenticatedBlogsBlogIdEditRoute
+  LayoutAuthenticatedMeLazyRoute: typeof LayoutAuthenticatedMeLazyRouteWithChildren
+  LayoutAuthenticatedBlogsCreateLazyRoute: typeof LayoutAuthenticatedBlogsCreateLazyRoute
+  LayoutAuthenticatedBlogsBlogIdEditLazyRoute: typeof LayoutAuthenticatedBlogsBlogIdEditLazyRoute
 }
 
 const LayoutAuthenticatedRouteChildren: LayoutAuthenticatedRouteChildren = {
-  LayoutAuthenticatedMeRoute: LayoutAuthenticatedMeRouteWithChildren,
-  LayoutAuthenticatedBlogsCreateRoute: LayoutAuthenticatedBlogsCreateRoute,
-  LayoutAuthenticatedBlogsBlogIdEditRoute:
-    LayoutAuthenticatedBlogsBlogIdEditRoute,
+  LayoutAuthenticatedMeLazyRoute: LayoutAuthenticatedMeLazyRouteWithChildren,
+  LayoutAuthenticatedBlogsCreateLazyRoute:
+    LayoutAuthenticatedBlogsCreateLazyRoute,
+  LayoutAuthenticatedBlogsBlogIdEditLazyRoute:
+    LayoutAuthenticatedBlogsBlogIdEditLazyRoute,
 }
 
 const LayoutAuthenticatedRouteWithChildren =
@@ -303,16 +354,16 @@ interface LayoutRouteChildren {
   LayoutAuthenticatedRoute: typeof LayoutAuthenticatedRouteWithChildren
   LayoutSearchRoute: typeof LayoutSearchRoute
   LayoutIndexRoute: typeof LayoutIndexRoute
-  LayoutAuthorsUsernameRoute: typeof LayoutAuthorsUsernameRoute
-  LayoutBlogsBlogSlugRoute: typeof LayoutBlogsBlogSlugRoute
+  LayoutAuthorsUsernameLazyRoute: typeof LayoutAuthorsUsernameLazyRoute
+  LayoutBlogsBlogSlugLazyRoute: typeof LayoutBlogsBlogSlugLazyRoute
 }
 
 const LayoutRouteChildren: LayoutRouteChildren = {
   LayoutAuthenticatedRoute: LayoutAuthenticatedRouteWithChildren,
   LayoutSearchRoute: LayoutSearchRoute,
   LayoutIndexRoute: LayoutIndexRoute,
-  LayoutAuthorsUsernameRoute: LayoutAuthorsUsernameRoute,
-  LayoutBlogsBlogSlugRoute: LayoutBlogsBlogSlugRoute,
+  LayoutAuthorsUsernameLazyRoute: LayoutAuthorsUsernameLazyRoute,
+  LayoutBlogsBlogSlugLazyRoute: LayoutBlogsBlogSlugLazyRoute,
 }
 
 const LayoutRouteWithChildren =
@@ -320,107 +371,107 @@ const LayoutRouteWithChildren =
 
 export interface FileRoutesByFullPath {
   '': typeof LayoutAuthenticatedRouteWithChildren
-  '/reset-password': typeof AuthResetPasswordRoute
-  '/signin': typeof AuthSigninRoute
-  '/signup': typeof AuthSignupRoute
   '/search': typeof LayoutSearchRoute
+  '/reset-password': typeof AuthResetPasswordLazyRoute
+  '/signin': typeof AuthSigninLazyRoute
+  '/signup': typeof AuthSignupLazyRoute
   '/': typeof LayoutIndexRoute
-  '/me': typeof LayoutAuthenticatedMeRouteWithChildren
-  '/authors/$username': typeof LayoutAuthorsUsernameRoute
-  '/blogs/$blogSlug': typeof LayoutBlogsBlogSlugRoute
-  '/blogs/create': typeof LayoutAuthenticatedBlogsCreateRoute
-  '/blogs/$blogId/edit': typeof LayoutAuthenticatedBlogsBlogIdEditRoute
+  '/me': typeof LayoutAuthenticatedMeLazyRouteWithChildren
+  '/authors/$username': typeof LayoutAuthorsUsernameLazyRoute
+  '/blogs/$blogSlug': typeof LayoutBlogsBlogSlugLazyRoute
+  '/blogs/create': typeof LayoutAuthenticatedBlogsCreateLazyRoute
   '/me/dashboard/blogs': typeof LayoutAuthenticatedMeDashboardBlogsRoute
-  '/me/settings/password': typeof LayoutAuthenticatedMeSettingsPasswordRoute
-  '/me/settings/profile': typeof LayoutAuthenticatedMeSettingsProfileRoute
+  '/blogs/$blogId/edit': typeof LayoutAuthenticatedBlogsBlogIdEditLazyRoute
+  '/me/settings/password': typeof LayoutAuthenticatedMeSettingsPasswordLazyRoute
+  '/me/settings/profile': typeof LayoutAuthenticatedMeSettingsProfileLazyRoute
 }
 
 export interface FileRoutesByTo {
   '': typeof LayoutAuthenticatedRouteWithChildren
-  '/reset-password': typeof AuthResetPasswordRoute
-  '/signin': typeof AuthSigninRoute
-  '/signup': typeof AuthSignupRoute
   '/search': typeof LayoutSearchRoute
+  '/reset-password': typeof AuthResetPasswordLazyRoute
+  '/signin': typeof AuthSigninLazyRoute
+  '/signup': typeof AuthSignupLazyRoute
   '/': typeof LayoutIndexRoute
-  '/me': typeof LayoutAuthenticatedMeRouteWithChildren
-  '/authors/$username': typeof LayoutAuthorsUsernameRoute
-  '/blogs/$blogSlug': typeof LayoutBlogsBlogSlugRoute
-  '/blogs/create': typeof LayoutAuthenticatedBlogsCreateRoute
-  '/blogs/$blogId/edit': typeof LayoutAuthenticatedBlogsBlogIdEditRoute
+  '/me': typeof LayoutAuthenticatedMeLazyRouteWithChildren
+  '/authors/$username': typeof LayoutAuthorsUsernameLazyRoute
+  '/blogs/$blogSlug': typeof LayoutBlogsBlogSlugLazyRoute
+  '/blogs/create': typeof LayoutAuthenticatedBlogsCreateLazyRoute
   '/me/dashboard/blogs': typeof LayoutAuthenticatedMeDashboardBlogsRoute
-  '/me/settings/password': typeof LayoutAuthenticatedMeSettingsPasswordRoute
-  '/me/settings/profile': typeof LayoutAuthenticatedMeSettingsProfileRoute
+  '/blogs/$blogId/edit': typeof LayoutAuthenticatedBlogsBlogIdEditLazyRoute
+  '/me/settings/password': typeof LayoutAuthenticatedMeSettingsPasswordLazyRoute
+  '/me/settings/profile': typeof LayoutAuthenticatedMeSettingsProfileLazyRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_auth': typeof AuthRouteWithChildren
   '/_layout': typeof LayoutRouteWithChildren
-  '/_auth/reset-password': typeof AuthResetPasswordRoute
-  '/_auth/signin': typeof AuthSigninRoute
-  '/_auth/signup': typeof AuthSignupRoute
   '/_layout/_authenticated': typeof LayoutAuthenticatedRouteWithChildren
   '/_layout/search': typeof LayoutSearchRoute
+  '/_auth/reset-password': typeof AuthResetPasswordLazyRoute
+  '/_auth/signin': typeof AuthSigninLazyRoute
+  '/_auth/signup': typeof AuthSignupLazyRoute
   '/_layout/': typeof LayoutIndexRoute
-  '/_layout/_authenticated/me': typeof LayoutAuthenticatedMeRouteWithChildren
-  '/_layout/authors/$username': typeof LayoutAuthorsUsernameRoute
-  '/_layout/blogs/$blogSlug': typeof LayoutBlogsBlogSlugRoute
-  '/_layout/_authenticated/blogs/create': typeof LayoutAuthenticatedBlogsCreateRoute
-  '/_layout/_authenticated/blogs/$blogId/edit': typeof LayoutAuthenticatedBlogsBlogIdEditRoute
+  '/_layout/_authenticated/me': typeof LayoutAuthenticatedMeLazyRouteWithChildren
+  '/_layout/authors/$username': typeof LayoutAuthorsUsernameLazyRoute
+  '/_layout/blogs/$blogSlug': typeof LayoutBlogsBlogSlugLazyRoute
+  '/_layout/_authenticated/blogs/create': typeof LayoutAuthenticatedBlogsCreateLazyRoute
   '/_layout/_authenticated/me/dashboard/blogs': typeof LayoutAuthenticatedMeDashboardBlogsRoute
-  '/_layout/_authenticated/me/settings/password': typeof LayoutAuthenticatedMeSettingsPasswordRoute
-  '/_layout/_authenticated/me/settings/profile': typeof LayoutAuthenticatedMeSettingsProfileRoute
+  '/_layout/_authenticated/blogs/$blogId/edit': typeof LayoutAuthenticatedBlogsBlogIdEditLazyRoute
+  '/_layout/_authenticated/me/settings/password': typeof LayoutAuthenticatedMeSettingsPasswordLazyRoute
+  '/_layout/_authenticated/me/settings/profile': typeof LayoutAuthenticatedMeSettingsProfileLazyRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | ''
+    | '/search'
     | '/reset-password'
     | '/signin'
     | '/signup'
-    | '/search'
     | '/'
     | '/me'
     | '/authors/$username'
     | '/blogs/$blogSlug'
     | '/blogs/create'
-    | '/blogs/$blogId/edit'
     | '/me/dashboard/blogs'
+    | '/blogs/$blogId/edit'
     | '/me/settings/password'
     | '/me/settings/profile'
   fileRoutesByTo: FileRoutesByTo
   to:
     | ''
+    | '/search'
     | '/reset-password'
     | '/signin'
     | '/signup'
-    | '/search'
     | '/'
     | '/me'
     | '/authors/$username'
     | '/blogs/$blogSlug'
     | '/blogs/create'
-    | '/blogs/$blogId/edit'
     | '/me/dashboard/blogs'
+    | '/blogs/$blogId/edit'
     | '/me/settings/password'
     | '/me/settings/profile'
   id:
     | '__root__'
     | '/_auth'
     | '/_layout'
+    | '/_layout/_authenticated'
+    | '/_layout/search'
     | '/_auth/reset-password'
     | '/_auth/signin'
     | '/_auth/signup'
-    | '/_layout/_authenticated'
-    | '/_layout/search'
     | '/_layout/'
     | '/_layout/_authenticated/me'
     | '/_layout/authors/$username'
     | '/_layout/blogs/$blogSlug'
     | '/_layout/_authenticated/blogs/create'
-    | '/_layout/_authenticated/blogs/$blogId/edit'
     | '/_layout/_authenticated/me/dashboard/blogs'
+    | '/_layout/_authenticated/blogs/$blogId/edit'
     | '/_layout/_authenticated/me/settings/password'
     | '/_layout/_authenticated/me/settings/profile'
   fileRoutesById: FileRoutesById
@@ -468,18 +519,6 @@ export const routeTree = rootRoute
         "/_layout/blogs/$blogSlug"
       ]
     },
-    "/_auth/reset-password": {
-      "filePath": "_auth/reset-password.tsx",
-      "parent": "/_auth"
-    },
-    "/_auth/signin": {
-      "filePath": "_auth/signin.tsx",
-      "parent": "/_auth"
-    },
-    "/_auth/signup": {
-      "filePath": "_auth/signup.tsx",
-      "parent": "/_auth"
-    },
     "/_layout/_authenticated": {
       "filePath": "_layout/_authenticated.tsx",
       "parent": "/_layout",
@@ -493,12 +532,24 @@ export const routeTree = rootRoute
       "filePath": "_layout/search.tsx",
       "parent": "/_layout"
     },
+    "/_auth/reset-password": {
+      "filePath": "_auth/reset-password.lazy.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/signin": {
+      "filePath": "_auth/signin.lazy.tsx",
+      "parent": "/_auth"
+    },
+    "/_auth/signup": {
+      "filePath": "_auth/signup.lazy.tsx",
+      "parent": "/_auth"
+    },
     "/_layout/": {
       "filePath": "_layout/index.tsx",
       "parent": "/_layout"
     },
     "/_layout/_authenticated/me": {
-      "filePath": "_layout/_authenticated/me.tsx",
+      "filePath": "_layout/_authenticated/me.lazy.tsx",
       "parent": "/_layout/_authenticated",
       "children": [
         "/_layout/_authenticated/me/dashboard/blogs",
@@ -507,31 +558,31 @@ export const routeTree = rootRoute
       ]
     },
     "/_layout/authors/$username": {
-      "filePath": "_layout/authors/$username.tsx",
+      "filePath": "_layout/authors/$username.lazy.tsx",
       "parent": "/_layout"
     },
     "/_layout/blogs/$blogSlug": {
-      "filePath": "_layout/blogs/$blogSlug.tsx",
+      "filePath": "_layout/blogs/$blogSlug.lazy.tsx",
       "parent": "/_layout"
     },
     "/_layout/_authenticated/blogs/create": {
-      "filePath": "_layout/_authenticated/blogs/create.tsx",
-      "parent": "/_layout/_authenticated"
-    },
-    "/_layout/_authenticated/blogs/$blogId/edit": {
-      "filePath": "_layout/_authenticated/blogs/$blogId.edit.tsx",
+      "filePath": "_layout/_authenticated/blogs/create.lazy.tsx",
       "parent": "/_layout/_authenticated"
     },
     "/_layout/_authenticated/me/dashboard/blogs": {
       "filePath": "_layout/_authenticated/me/dashboard/blogs.tsx",
       "parent": "/_layout/_authenticated/me"
     },
+    "/_layout/_authenticated/blogs/$blogId/edit": {
+      "filePath": "_layout/_authenticated/blogs/$blogId.edit.lazy.tsx",
+      "parent": "/_layout/_authenticated"
+    },
     "/_layout/_authenticated/me/settings/password": {
-      "filePath": "_layout/_authenticated/me/settings/password.tsx",
+      "filePath": "_layout/_authenticated/me/settings/password.lazy.tsx",
       "parent": "/_layout/_authenticated/me"
     },
     "/_layout/_authenticated/me/settings/profile": {
-      "filePath": "_layout/_authenticated/me/settings/profile.tsx",
+      "filePath": "_layout/_authenticated/me/settings/profile.lazy.tsx",
       "parent": "/_layout/_authenticated/me"
     }
   }
